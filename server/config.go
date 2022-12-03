@@ -33,9 +33,11 @@ func LoadConfig() ConfigFile {
 	// Check if the file is a valid JSON
 	config, err := readJSON(content)
 	if err != nil {
-		fmt.Println("The config.json file is not a valid JSON file! Please fix it and restart the server.")
+		fmt.Println("[ZohyMC] The config.json file is not a valid JSON file! Please fix it and restart the server.")
 		os.Exit(1)
 	}
+
+	fmt.Println("[ZohyMC] Loaded the server configuration successfully!")
 
 	return config
 }
