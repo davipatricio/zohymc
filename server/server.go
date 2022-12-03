@@ -18,6 +18,8 @@ type Server struct {
 func (s Server) CreateServer(options types.ServerOptions) Server {
 	s.BaseServer = &types.BaseServer{}
 
+	LoadConfig()
+
 	ln, err := net.Listen("tcp", fmt.Sprintf("%s:%d", options.Address, options.Port))
 
 	// TODO: throw better errors
@@ -31,6 +33,9 @@ func (s Server) CreateServer(options types.ServerOptions) Server {
 
 		// TODO: throw better errors
 		if err != nil {
+			if err.Error() == "EOF" {
+				continue
+			}
 			panic(err)
 		}
 
