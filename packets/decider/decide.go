@@ -11,21 +11,26 @@ import (
 func Decide(packet utils.Packet, player *types.Player) {
 	fmt.Println("Packet id:", packet.Id, "Packet length:", packet.Length, "Packet data:", packet.Data)
 
-	if player.State == 0 {
-		if packet.Id == 0 {
-			packets.HandleHandshake(player, packet.Data)
-			return
-		}
+	switch player.State {
+	case types.ConnectionStateNotConnected:
+		handleNotConnectedPackets(packet, player)
+	case types.ConnectionStateStatus:
+		handleStatusPackets(packet, player)
 	}
+}
 
-	if player.State == 1 {
-		if packet.Id == 0 {
-			packets.HandleStatusRequest(player)
-			return
-		}
-		if packet.Id == 1 {
-			packets.HandlePingRequest(player, packet)
-			return
-		}
+func handleNotConnectedPackets(packet utils.Packet, player *types.Player) {
+	switch packet.Id {
+	case 0x00:
+		packets.HandleHandshake(player, packet.Data)
+	}
+}
+
+func handleStatusPackets(packet utils.Packet, player *types.Player) {
+	switch packet.Id {
+	case 0x00:
+		packets.HandleStatusRequest(player)
+	case 0x01:
+		packets.HandlePingRequest(player, packet)
 	}
 }
