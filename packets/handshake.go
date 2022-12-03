@@ -9,7 +9,7 @@ type HandshakeData struct {
 	ProtocolVersion int32
 	ServerAddress   string
 	ServerPort      uint16
-	NextState       uint8
+	NextState       types.ConnectionState
 }
 
 func HandleHandshake(player *types.Player, data []byte) {
@@ -37,7 +37,7 @@ func DecodeStatusHandshake(data []byte) (handshake HandshakeData) {
 	handshake.ProtocolVersion = protocolVersion
 	handshake.ServerAddress = serverAddress
 	handshake.ServerPort = serverPort
-	handshake.NextState = uint8(nextState)
+	handshake.NextState = types.ConnectionState(nextState)
 
 	return
 }
