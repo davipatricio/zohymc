@@ -5,7 +5,7 @@ import (
 	"net"
 )
 
-func ReadVarLong(conn net.Conn) (result int64, err error) {
+func ReadVarLong(conn net.Conn) (result int64, position int32, err error) {
 	data := make([]byte, 1)
 	_, err = conn.Read(data)
 
@@ -16,22 +16,21 @@ func ReadVarLong(conn net.Conn) (result int64, err error) {
 	return DecodeVarLong(data)
 }
 
-func DecodeVarLong(data []byte) (result int64, err error) {
-	var numRead int32 = 0
+func DecodeVarLong(data []byte) (result int64, position int32, err error) {
 	var read byte
 	var value int64
 
 	for {
-		if numRead > 8 {
+		if position > 8 {
 			err = errors.New("VarLong too big")
 			return
 		}
 
-		read = data[numRead]
+		read = data[position]
 		value = int64(read & 0b01111111)
-		result |= value << (7 * numRead)
+		result |= value << (7 * position)
 
-		numRead++
+		position++
 		if read&0b10000000 == 0 {
 			break
 		}

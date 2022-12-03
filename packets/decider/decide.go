@@ -13,7 +13,7 @@ func Decide(packet utils.Packet, player *types.Player) {
 
 	if player.State == 0 {
 		if packet.Id == 0 {
-			packets.HandleHandshake(player)
+			packets.HandleHandshake(player, packet.Data)
 			return
 		}
 	}

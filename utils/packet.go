@@ -15,14 +15,14 @@ type Packet struct {
 
 func ReadNextPacket(player *types.Player) (packet Packet, err error) {
 	// Read the packet length
-	length, err := protocol.ReadVarInt(*player.Conn)
+	length, _, err := protocol.ReadVarInt(*player.Conn)
 	if err != nil {
 		return
 	}
 
 	length -= 1
 	// Read the packet id
-	id, err := protocol.ReadVarInt(*player.Conn)
+	id, _, err := protocol.ReadVarInt(*player.Conn)
 	if err != nil {
 		return
 	}

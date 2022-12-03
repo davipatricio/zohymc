@@ -5,7 +5,7 @@ import (
 	"net"
 )
 
-func ReadVarInt(conn net.Conn) (result int32, err error) {
+func ReadVarInt(conn net.Conn) (result int32, position int32, err error) {
 	data := make([]byte, 1)
 	_, err = conn.Read(data)
 
@@ -16,22 +16,21 @@ func ReadVarInt(conn net.Conn) (result int32, err error) {
 	return DecodeVarInt(data)
 }
 
-func DecodeVarInt(data []byte) (result int32, err error) {
-	var numRead int32 = 0
+func DecodeVarInt(data []byte) (result int32, position int32, err error) {
 	var read byte
 	var value int32
 
 	for {
-		if numRead > 4 {
+		if position > 4 {
 			err = errors.New("VarInt too big")
 			return
 		}
 
-		read = data[numRead]
+		read = data[position]
 		value = int32(read & 0b01111111)
-		result |= value << (7 * numRead)
+		result |= value << (7 * position)
 
-		numRead++
+		position++
 		if read&0b10000000 == 0 {
 			break
 		}
