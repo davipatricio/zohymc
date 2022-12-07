@@ -9,7 +9,7 @@ import (
 )
 
 func Decide(packet utils.Packet, player *types.Player) {
-	fmt.Println("Packet id:", packet.Id, "Packet length:", packet.Length, "Packet data:", packet.Data)
+	fmt.Println("Player name:", player.Nick, "State:", player.State, "|", "Packet id:", packet.Id, "Packet length:", packet.Length, "Packet data:", packet.Data)
 
 	switch player.State {
 	case types.ConnectionStateNotConnected:
@@ -32,5 +32,12 @@ func handleStatusPackets(packet utils.Packet, player *types.Player) {
 		packets.HandleStatusRequest(player)
 	case 0x01:
 		packets.HandlePingRequest(player, packet)
+	}
+}
+
+func handleLoginPackets(packet utils.Packet, player *types.Player) {
+	switch packet.Id {
+	case 0x00:
+		packets.HandleLoginStart(player, packet)
 	}
 }

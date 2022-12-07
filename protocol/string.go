@@ -14,8 +14,21 @@ func DecodeString(data []byte) (value string, endPosition int32) {
 	// so we need to decode the varint first then read next X bytes to get the string
 	result, endPosition, _ := DecodeVarInt(data)
 
-	value = string(data[endPosition : int(endPosition+result)])
+	value = string(data[endPosition:int(endPosition+result)])
 	endPosition += result + 1
+
+	return
+}
+
+// encode an array of strings (these strings dont need prefix)
+func EncodeStringArray(value []string) (data []byte) {
+	// encode the length of the array
+	data = append(data, EncodeVarInt(int32(len(value)))...)
+
+	// encode each string
+	for _, str := range value {
+		data = append(data, EncodeString(str)...)
+	}
 
 	return
 }
